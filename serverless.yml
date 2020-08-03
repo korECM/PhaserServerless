@@ -23,6 +23,7 @@ service: phaser
 provider:
   name: aws
   runtime: nodejs12.x
+  region: ap-northeast-2
 
 # you can overwrite defaults here
 #  stage: dev
@@ -60,8 +61,18 @@ provider:
 functions:
   dataPush:
     handler: handler.dataPush
+    events:
+      - http:
+          path: /roadData
+          method: post
+          cors: true
   dataGet:
     handler: handler.dataGet
+    events:
+      - http:
+          path: /roadData
+          method: get
+          cors: true
 
 plugins:
   - serverless-offline
