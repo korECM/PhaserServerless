@@ -41,9 +41,9 @@ exports.dataPush = function (event, context, callback) {
     .database()
     .ref("roadDatas")
     .push({
-      latitude: "3",
-      longitude: "4",
-      magnitude: "5",
+      latitude,
+      longitude,
+      magnitude,
       time: new Date().toISOString(),
     }, (error) => {
       if (error) {
@@ -66,6 +66,7 @@ exports.dataGet = function (event, context, callback) {
 
   firebase
     .database()
+
     .ref("roadDatas")
     .once("value")
     .then(function (e) {
