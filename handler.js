@@ -19,14 +19,19 @@ exports.dataPush = function (event, context, callback) {
 
   console.log(bodyData);
 
-  const {
-    latitude,
-    longitude,
-    magnitude
-  } = bodyData;
+  const { latitude, longitude, magnitude, imageLink } = bodyData;
 
-  if (!latitude || !longitude || !magnitude) {
-    callback("No Data " + latitude + " " + longitude + " " + magnitude);
+  if (!latitude || !longitude || !magnitude || !imageLink) {
+    callback(
+      "No Data " +
+        latitude +
+        " " +
+        longitude +
+        " " +
+        magnitude +
+        " " +
+        imageLink
+    );
     return;
   }
 
@@ -40,25 +45,29 @@ exports.dataPush = function (event, context, callback) {
   firebase
     .database()
     .ref("roadDatas")
-    .push({
-      latitude,
-      longitude,
-      magnitude,
-      time: new Date().toISOString(),
-    }, (error) => {
-      if (error) {
-        console.error(error);
-        callback("Database set error " + error);
-        context.fail();
+    .push(
+      {
+        latitude,
+        longitude,
+        magnitude,
+        imageLink,
+        time: new Date().toISOString(),
+      },
+      (error) => {
+        if (error) {
+          console.error(error);
+          callback("Database set error " + error);
+          context.fail();
+        }
+        const response = {
+          statusCode: 200,
+          body: "OK",
+        };
+        console.log("RETURN : ", response);
+        callback(null, response);
+        context.succeed();
       }
-      const response = {
-        statusCode: 200,
-        body: "OK",
-      };
-      console.log("RETURN : ", response);
-      callback(null, response);
-      context.succeed();
-    })
+    );
 };
 
 exports.dataGet = function (event, context, callback) {
